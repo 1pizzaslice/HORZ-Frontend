@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { fontVariables } from "./fonts";
 import { DEFAULT_THEME, SURFACE_COLOR, themeInitScript } from "@/lib/theme";
+import { MotionProvider } from "@/lib/motion-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -37,7 +38,8 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col">
         {/* film grain over everything — kills banding, prints the surface */}
         <div className="grain" aria-hidden="true" />
-        {children}
+        {/* reduced-motion is first-class (§8.10): Framer respects the OS query */}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

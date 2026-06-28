@@ -4,8 +4,9 @@
    horz — design tokens
    One night. One fog. One flare. Two voices. One section.
 
-   Source of truth: ../design/DESIGN_SYSTEM.md (§4 color, §5 type, §6 spacing)
-   Pixel target:    ../design/preview/index.html (the locked static mock)
+   Source of truth: ../design/DESIGN_SYSTEM.md — the single canonical doc.
+   (§4 color · §5 type · §6 spacing · §7 components · §8 motion)
+   Visual reference: ../design/screenshots/ (real-build, not a mock).
 
    Architecture
    - Semantic colour vars live on :root (dark "blue hour" = home) and are
@@ -348,8 +349,11 @@
     text-transform: uppercase;
     color: var(--text-tertiary);
   }
+  /* eyebrow separator is a neutral tick — vermilion is reserved for the closed
+     allow-list (§4): CTA, inline link, live datum, focus ring, status dot, core.
+     A decorative middot is not on it. Real status uses <StatusDot> (§7.4). */
   .eyebrow .dot {
-    color: var(--flare);
+    color: var(--text-tertiary);
   }
 
   /* strata indices, metrics, the survey-coordinate motif */
@@ -399,11 +403,59 @@
     max-width: var(--w-prose);
   }
 
+  /* a column on the 12-col grid (<Col>). Full-width below md so asymmetry is a
+     desktop decision; spans/starts from CSS custom props apply at md+. */
+  .hz-col {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 48rem) {
+    .hz-col {
+      grid-column: var(--col-start-md, auto) / span var(--col-span-md, 12);
+    }
+  }
+
   /* the structural section line — 1px, full-bleed, same logic sitewide */
   .datum {
     width: 100%;
     height: 1px;
     background: var(--datum);
+  }
+
+  /* a major section's vertical air (§6 / ban-list #16). Macro rhythm on-scale:
+     96 → 128. Control density collapses it to the rack jolt (48 → 64). The
+     density jolt is driven by [data-density] so <Section> stays a server file. */
+  .section {
+    padding-block: var(--s-96);
+  }
+  @media (min-width: 48rem) {
+    .section {
+      padding-block: var(--s-128);
+    }
+  }
+  [data-density="control"] .section {
+    padding-block: var(--s-48);
+  }
+  @media (min-width: 48rem) {
+    [data-density="control"] .section {
+      padding-block: var(--s-64);
+    }
+  }
+
+  /* the Swiss sidehead rail — label pulled into the left margin, body on the
+     wide column, deliberate right-hand negative space. Stacks below md. */
+  .section-grid {
+    display: block;
+  }
+  @media (min-width: 48rem) {
+    .section-grid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      column-gap: var(--s-48);
+    }
+    [data-density="control"] .section-grid {
+      grid-template-columns: 160px minmax(0, 1fr);
+      column-gap: var(--s-32);
+    }
   }
 }
 
@@ -460,6 +512,17 @@
   display: none;
 }
 
+/* labeled Night / Day toggle (footer, §8.10) — the active surface reads in ink,
+   the other in tertiary. CSS-driven off data-theme → no hydration flash. */
+.theme-label {
+  color: var(--text-tertiary);
+  transition: color var(--dur-fast) var(--ease-micro);
+}
+[data-theme="dark"] .theme-label-night,
+[data-theme="light"] .theme-label-day {
+  color: var(--text-primary);
+}
+
 /* ----------------------------------------------------------------------------
    10 · REDUCED MOTION  (specified, not retrofitted — §8.10)
    -------------------------------------------------------------------------- */
@@ -474,5 +537,314 @@
   }
   .dusk-band {
     animation: none;
+  }
+  /* the seam-in degrades to an opacity fade — state is never motion-only (§7.0) */
+  .seam::after,
+  .inline-link {
+    transition-duration: var(--dur-fast) !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   11 · THE SEAM-IN ATOM  (§7.0 — the most-repeated motion on the site)
+   A 1px line wipes in scaleX 0→1, left-origin, on the primary draw-in ease.
+   The link underline, the secondary-button edge, the card seam, the tab
+   indicator, the nav/footer hovers all inherit this one gesture.
+
+   Note (reconciliation): §7.0 names a near-identical house ease
+   cubic-bezier(0.22,1,0.36,1); Phase 0 locked the §8.1 Scribe primary
+   --ease-line (0.16,1,0.3,1) and §8.1 explicitly assigns "the seam wipe" to it.
+   The token foundation wins — every seam rides --ease-line.
+   -------------------------------------------------------------------------- */
+@layer components {
+  .seam {
+    position: relative;
+  }
+  .seam::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--seam-color, currentColor);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dur-base) var(--ease-line);
+    pointer-events: none;
+  }
+  .seam-top::after {
+    bottom: auto;
+    top: 0;
+  }
+  .seam:hover::after,
+  .seam:focus-visible::after,
+  .seam[data-seam="on"]::after {
+    transform: scaleX(1);
+  }
+
+  /* inline text link (§7.2) — underline wipes left→right, survives line wraps.
+     Colour is flare-link (APCA-safe inline in both themes). .quiet = footer/meta. */
+  .inline-link {
+    color: var(--flare-link);
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    padding-bottom: 2px;
+    transition: background-size var(--dur-base) var(--ease-line);
+  }
+  .inline-link:hover,
+  .inline-link:focus-visible {
+    background-size: 100% 1px;
+  }
+  .inline-link.quiet {
+    color: var(--text-secondary);
+  }
+  .inline-link.quiet:hover,
+  .inline-link.quiet:focus-visible {
+    color: var(--text-primary);
+  }
+  /* external-link trailing glyph sits in tertiary, never flare (§7.2) */
+  .inline-link .ext {
+    color: var(--text-tertiary);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   12 · BUTTONS  (§7.1 — radius 2px, ui-label, one flare fill per viewport)
+   Layout/type/state live here; the React <CTA> only picks variant + size.
+   -------------------------------------------------------------------------- */
+@layer components {
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px; /* md */
+    padding-inline: 20px;
+    border-radius: var(--radius-control);
+    font-family: var(--grotesk);
+    font-weight: 500;
+    font-size: 0.9375rem; /* 15px ui-label */
+    line-height: 1rem;
+    letter-spacing: 0.004em;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-micro),
+      border-color var(--dur-fast) var(--ease-micro),
+      color var(--dur-fast) var(--ease-micro);
+  }
+  .btn-sm {
+    height: 32px;
+    padding-inline: 12px;
+    gap: 6px;
+  }
+  .btn-lg {
+    height: 48px;
+    padding-inline: 28px;
+  }
+  .btn-block {
+    width: 100%;
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* primary — the single flare CTA. Ink-dark label for max contrast. */
+  .btn-primary {
+    background: var(--flare);
+    color: var(--bg);
+  }
+  .btn-primary:hover {
+    background: var(--flare-hover);
+  }
+  .btn-primary:active .btn-label {
+    transform: translateY(0.5px);
+  }
+  .btn-primary:disabled {
+    background: var(--flare-muted);
+    color: var(--text-tertiary);
+  }
+
+  /* secondary — hairline box; the one flare it shows is the bottom seam. */
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    --seam-color: var(--flare);
+  }
+  .btn-secondary:hover {
+    border-color: var(--text-tertiary);
+    background: var(--surface);
+  }
+  .btn-secondary:active {
+    background: var(--surface-raised);
+  }
+  .btn-secondary:disabled {
+    color: var(--text-tertiary);
+    border-color: color-mix(in srgb, var(--border) 50%, transparent);
+  }
+
+  /* ghost — quietest tier, no seam (reserve it for secondary/link). */
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+  }
+  .btn-ghost:active {
+    background: var(--surface);
+  }
+  .btn-ghost:disabled {
+    color: var(--text-tertiary);
+  }
+
+  /* destructive — danger, never flare; ghost by default (§7.1.4). */
+  .btn-destructive {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+  }
+  .btn-destructive:hover {
+    border-color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 8%, transparent);
+  }
+  /* destructive focus ring matches the action's semantic — the one non-flare ring */
+  .btn-destructive:focus-visible {
+    outline-color: var(--danger);
+  }
+
+  /* loading — width frozen by the caller; a 1px bar seams along the bottom,
+     looping scaleX (§7.1.1). flare→ink on primary, ink on secondary/ghost. */
+  .btn-loadbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    transform-origin: left;
+    animation: btn-loadbar 900ms var(--ease-line) infinite;
+  }
+  .btn-primary .btn-loadbar {
+    background: var(--bg);
+  }
+  .btn-secondary .btn-loadbar,
+  .btn-ghost .btn-loadbar {
+    background: var(--text-primary);
+  }
+}
+
+@keyframes btn-loadbar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* the section-glyph spinner — strata redrawing, not a circular throbber (§7.1.1).
+   three hairlines fade in sequence; a short core holds. Freezes under §10. */
+@keyframes glyph-redraw {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+.glyph-spinner .s1 {
+  animation: glyph-redraw 1.2s var(--ease-line) infinite;
+}
+.glyph-spinner .s2 {
+  animation: glyph-redraw 1.2s var(--ease-line) infinite 0.15s;
+}
+.glyph-spinner .s3 {
+  animation: glyph-redraw 1.2s var(--ease-line) infinite 0.3s;
+}
+
+/* ----------------------------------------------------------------------------
+   13 · STATUS DOT  (§7.4 — the fifth sanctioned flare use; 6px filled)
+   Pulse (opacity, never scale) is reserved for a true real-time "live".
+   -------------------------------------------------------------------------- */
+@layer components {
+  .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px; /* the one round shape allowed — a signal, not a control */
+    flex: none;
+  }
+  .status-dot-pulse {
+    animation: status-pulse 2s var(--ease-soft) infinite alternate;
+  }
+}
+@keyframes status-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   14 · STRATUM ROW  (§7.6 mobile nav / §7.7 footer — items drawn as strata)
+   Hairline-divided rows pierced by the index; a tapped/hovered row's seam
+   thickens to flare. Density-aware via [data-density].
+   -------------------------------------------------------------------------- */
+@layer components {
+  .stratum-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-16);
+    height: 56px;
+    border-top: 1px solid var(--border);
+    --seam-color: var(--flare);
+  }
+  [data-density="control"] .stratum-row {
+    height: 40px;
+    gap: var(--s-8);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   15 · NAV CHROME  (§8.1 — transparent over hero → seated on scroll)
+   -------------------------------------------------------------------------- */
+@layer components {
+  .nav-bar {
+    transition:
+      background-color var(--dur-mod) var(--ease-line),
+      backdrop-filter var(--dur-mod) var(--ease-line),
+      height var(--dur-mod) var(--ease-line),
+      border-color var(--dur-mod) var(--ease-line);
+  }
+  .nav-bar[data-seated="true"] {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* the active-route micro-flare tick (§7.6) — the only flare in the bar at rest */
+  .nav-link-active {
+    position: relative;
+    color: var(--text-primary);
+  }
+  .nav-link-active::after {
+    content: "";
+    position: absolute;
+    left: 12px; /* clears the link's px-3 inset so the tick hugs the label */
+    right: 12px;
+    bottom: 0; /* the link is full bar-height → this seats on the bottom datum */
+    height: 1px;
+    background: var(--flare);
   }
 }

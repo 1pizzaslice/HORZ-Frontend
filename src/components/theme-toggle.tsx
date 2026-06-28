@@ -3,31 +3,31 @@
 import { SURFACE_COLOR, THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
 
 /**
- * Day / night switch. The icon shown is chosen purely by CSS from the
- * html[data-theme] attribute (see globals.css §10), so server and client
- * render identical markup — no hydration mismatch, no mounted-flash. The
- * click handler only flips the attribute and persists the choice.
+ * Flip the surface and persist it. The icon/label shown is chosen purely by CSS
+ * from html[data-theme] (globals.css §9), so server and client render identical
+ * markup — no hydration mismatch, no mounted-flash.
  */
-export function ThemeToggle() {
-  function toggle() {
-    const root = document.documentElement;
-    const current = (root.getAttribute("data-theme") as Theme) ?? "dark";
-    const next: Theme = current === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", SURFACE_COLOR[next]);
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, next);
-    } catch {
-      /* storage may be unavailable; the toggle still works for the session */
-    }
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = (root.getAttribute("data-theme") as Theme) ?? "dark";
+  const next: Theme = current === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", SURFACE_COLOR[next]);
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, next);
+  } catch {
+    /* storage may be unavailable; the toggle still works for the session */
   }
+}
 
+/** Icon switch (sun in night, moon in day) — nav / kit utility. */
+export function ThemeToggle() {
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={toggleTheme}
       aria-label="Toggle day / night"
       className="theme-toggle grid size-[34px] place-items-center rounded-control border border-line text-ink-muted transition-colors duration-150 ease-micro hover:border-ink-faint hover:text-ink"
     >
@@ -52,6 +52,32 @@ export function ThemeToggle() {
       >
         <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
       </svg>
+    </button>
+  );
+}
+
+/**
+ * Labeled Night / Day toggle — the footer's switch (§8.10). Stays in the survey
+ * metaphor, never "dark/light." The active surface reads in ink (CSS-driven),
+ * the other in tertiary. No flare — the footer is the calm exit.
+ */
+export function ThemeToggleLabeled() {
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label="Switch surface — Night (blue hour) or Day (day station)"
+      className="ui-label inline-flex items-center gap-2"
+    >
+      <span className="theme-label theme-label-night" title="Blue hour">
+        Night
+      </span>
+      <span className="text-ink-faint" aria-hidden="true">
+        /
+      </span>
+      <span className="theme-label theme-label-day" title="Day station">
+        Day
+      </span>
     </button>
   );
 }
