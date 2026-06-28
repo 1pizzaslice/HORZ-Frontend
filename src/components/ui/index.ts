@@ -9,3 +9,4 @@ export { StatusDot } from "./status-dot";
 export { Datum } from "./datum";
 export { DuskBand } from "./dusk-band";
 export { GlyphSpinner } from "./glyph-spinner";
+export { Reveal } from "./reveal";

@@ -1105,3 +1105,172 @@
     }
   }
 }
+
+/* ----------------------------------------------------------------------------
+   17 · HOMEPAGE — THE HERO  (§8.2 — the split cut)
+   Words on the left (cols 1–5, ending on the core), the seven-stratum cut drawn
+   on the right and bleeding to the edge. The one vertical core lands on the page
+   5/12 line, between words and drawing; the tagline "Vertically." is seated on it.
+   The set-piece transforms (datum/seam/core/dusk) are owned by hero.tsx (Framer);
+   this file owns the static geometry the beats animate against.
+   -------------------------------------------------------------------------- */
+@layer components {
+  .hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .hero-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-48);
+    min-height: 92vh;
+    padding-block: 128px 64px; /* clears the fixed nav; breathes before proof */
+  }
+  @media (min-width: 48rem) {
+    .hero-inner {
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+      padding-block: 96px 48px;
+    }
+  }
+
+  /* —— LEFT: the verbal stack —— */
+  .hero-words {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-inline: var(--s-24);
+  }
+  @media (min-width: 48rem) {
+    .hero-words {
+      flex: 0 0 auto;
+      width: 41.667%; /* cols 1–5: the words end exactly on the core */
+      padding-inline: var(--s-48) 0;
+    }
+  }
+  @media (min-width: 80rem) {
+    .hero-words {
+      padding-left: 80px;
+    }
+  }
+  /* the hero headline — display-xl (96px) won't sit in the 41.667% column without
+     ragged wraps, so it rides a fitted serif clamp; still serif / 400 (§5). */
+  .hero-headline {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.75rem, 5.2vw, 4.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+  }
+  @media (min-width: 48rem) {
+    .hero-headline {
+      padding-right: var(--s-32);
+    }
+    .hero .lead {
+      padding-right: var(--s-32);
+    }
+  }
+  /* the tagline rides the core — right-aligned so "Vertically." ends on the 5/12
+     line (the one structural serif fingerprint, §5). Left-aligned on mobile. */
+  .hero-tagline {
+    color: var(--text-primary);
+  }
+  @media (min-width: 48rem) {
+    .hero-tagline {
+      text-align: right;
+      /* sit just shy of the core, not on it — a hair of optical air (§8.2) */
+      padding-right: var(--s-16);
+    }
+  }
+
+  /* —— RIGHT: the drawn cut —— absolute on desktop so it bleeds to the edge —— */
+  .hero-cut {
+    position: relative;
+    width: 100%;
+    padding-inline: var(--s-24);
+  }
+  @media (min-width: 48rem) {
+    .hero-cut {
+      position: absolute;
+      left: 41.667%; /* the core / the drawing's left edge = the 5/12 line */
+      right: 0;
+      top: 96px;
+      bottom: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-inline: 0;
+    }
+  }
+
+  .hero-strata {
+    position: relative;
+  }
+  .hero-stratum {
+    position: relative;
+    height: 72px;
+  }
+  .hero-stratum-content {
+    display: flex;
+    align-items: center;
+    gap: var(--s-16);
+    height: 100%;
+    padding-left: var(--s-24); /* clears the core spine */
+  }
+  .hero-stratum .index {
+    color: var(--text-tertiary);
+  }
+  .hero-stratum-name {
+    font-family: var(--grotesk);
+    font-weight: 500;
+    font-size: 1.0625rem; /* 17px */
+    letter-spacing: -0.01em;
+    color: var(--text-secondary);
+  }
+  .hero-stratum-seam {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--border);
+    transform-origin: left center;
+  }
+  /* THE PAGE CORE — the one flare vertical, on the drawing's left edge (5/12),
+     descends last (beat 4, scaleY from the datum). */
+  .hero-core {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 1.5px;
+    background: var(--flare);
+    transform-origin: top center;
+  }
+
+  @media (max-width: 47.99rem) {
+    .hero-stratum {
+      height: 56px;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   18 · LENIS  (§8.11 — smooth scroll; classes are attached by the JS at runtime,
+   so these rules are inert until SmoothScroll mounts, and absent under
+   reduced-motion / touch where Lenis never initialises)
+   -------------------------------------------------------------------------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}

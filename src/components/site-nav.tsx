@@ -24,6 +24,7 @@ import { ease } from "@/lib/motion";
 export function SiteNav({ heroOverlay = false }: { heroOverlay?: boolean }) {
   const pathname = usePathname();
   const [seated, setSeated] = useState(!heroOverlay);
+  const [flareOff, setFlareOff] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const productRef = useRef<HTMLDivElement>(null);
@@ -36,6 +37,27 @@ export function SiteNav({ heroOverlay = false }: { heroOverlay?: boolean }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [heroOverlay]);
+
+  // a section that owns its own flare CTA fill (the manifesto floor) marks itself
+  // `[data-nav-flare="off"]`; while it's in view the nav primary reverts to a
+  // bordered button so there is never more than one flare fill per viewport (§8.11).
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll('[data-nav-flare="off"]'));
+    if (!targets.length) return;
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target);
+          else visible.delete(e.target);
+        }
+        setFlareOff(visible.size > 0);
+      },
+      { threshold: 0 },
+    );
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
+  }, []);
 
   // close the product menu on outside click / Esc
   useEffect(() => {
@@ -52,8 +74,9 @@ export function SiteNav({ heroOverlay = false }: { heroOverlay?: boolean }) {
     };
   }, [productOpen]);
 
-  // the primary fills with flare only once the hero's CTA has left the viewport
-  const primaryFilled = !heroOverlay || seated;
+  // the primary fills with flare only once the hero's CTA has left the viewport,
+  // and never while a section that owns the page's flare CTA fill is in view
+  const primaryFilled = (!heroOverlay || seated) && !flareOff;
   const links = [
     { label: "Pricing", href: "/pricing" },
     { label: "Manifesto", href: "/manifesto" },
