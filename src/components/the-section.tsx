@@ -70,9 +70,11 @@ const coreV: Variants = {
   hidden: { scaleY: 0 },
   visible: { scaleY: 1, transition: { duration: 0.64, ease: LINE, delay: 1.7 } },
 };
+// the dusk blooms BEFORE the core descends (content/06 §1) so the vermilion core
+// is the final beat — depth lands on top of the lit breadth.
 const duskV: Variants = {
   hidden: { opacity: 0, scaleY: 0 },
-  visible: { opacity: 1, scaleY: 1, transition: { duration: 0.8, ease: SOFT, delay: 1.9 } },
+  visible: { opacity: 1, scaleY: 1, transition: { duration: 0.8, ease: SOFT, delay: 1.3 } },
 };
 
 /** Avoid the SSR useLayoutEffect warning while keeping the pre-paint timing. */
@@ -120,10 +122,12 @@ function Chevron() {
 function Rack({
   play,
   animateIt,
+  reduced,
   withDuskBand,
 }: {
   play: boolean;
   animateIt: boolean;
+  reduced: boolean;
   withDuskBand: boolean;
 }) {
   const seat = (variants: Variants) => {
@@ -134,6 +138,13 @@ function Rack({
       variants,
     };
   };
+
+  // "one degree of life on hover" (§8.5 / content/06 §3): the hovered/focused
+  // row plays its own micro-motion and lights the single flare accent; pointer
+  // hover animates, keyboard focus snaps to the resolved end-state (no motion).
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [focusIndex, setFocusIndex] = useState<number | null>(null);
+  const activeIndex = hoverIndex ?? focusIndex;
 
   return (
     <>
@@ -146,12 +157,26 @@ function Rack({
       <div className="the-section-strata">
         {STRATA.map((s, i) => {
           const Artifact = SECTION_ARTIFACTS[s.index];
+          // reduced: every row at its resolved end-state, no motion, no per-row
+          // flare (the core stays the only flare). otherwise the active row alone
+          // resolves + flares; pointer hover animates, keyboard focus snaps.
+          const artifactProps = reduced
+            ? { active: true, flare: false, snap: true }
+            : {
+                active: activeIndex === i,
+                flare: activeIndex === i,
+                snap: hoverIndex === null && focusIndex === i,
+              };
           return (
             <Link
               key={s.index}
               href={s.href}
               className="stratum"
               aria-label={`${s.index} ${s.name} — ${s.blurb}`}
+              onPointerEnter={() => setHoverIndex(i)}
+              onPointerLeave={() => setHoverIndex((cur) => (cur === i ? null : cur))}
+              onFocus={() => setFocusIndex(i)}
+              onBlur={() => setFocusIndex((cur) => (cur === i ? null : cur))}
             >
               <motion.div className="stratum-content" {...seat(contentV(i))}>
                 {/* left of the core — what the layer IS */}
@@ -164,7 +189,7 @@ function Rack({
                 </span>
                 {/* right of the core — the work drawn in section */}
                 <span className="stratum-figure">
-                  <span className="stratum-artifact">{Artifact ? <Artifact /> : null}</span>
+                  <span className="stratum-artifact">{Artifact ? <Artifact {...artifactProps} /> : null}</span>
                   <span className="stratum-chevron">
                     <Chevron />
                   </span>
@@ -210,7 +235,7 @@ export function TheSection({
     <div ref={ref} className={`the-section ${className}`.trim()}>
       {/* keyed on `animateIt` so the motion subtree mounts with initial="hidden"
           exactly once, before paint — SSR/no-JS/reduced all render fully drawn. */}
-      <Rack key={animateIt ? "play" : "static"} play={play} animateIt={animateIt} withDuskBand={withDuskBand} />
+      <Rack key={animateIt ? "play" : "static"} play={play} animateIt={animateIt} reduced={reduced} withDuskBand={withDuskBand} />
     </div>
   );
 }

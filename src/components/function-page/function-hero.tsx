@@ -36,9 +36,16 @@ export function FunctionHero({ fn }: { fn: FunctionPage }) {
   const art = FUNCTION_HERO_ART[fn.index];
   const Art = art?.Art;
 
+  // the drawing is *surveyed in* left→right — the brand's draw grammar (the datum
+  // and strata both draw L→R), so the section reads as being cut, not faded in
+  // (content/06 "enriches + animates"). The flare core + node still land last.
   const drawingV: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: LINE, delay: 0.15 } },
+    hidden: { clipPath: "inset(0 100% 0 0)", opacity: 0.6 },
+    visible: {
+      clipPath: "inset(0 0% 0 0)",
+      opacity: 1,
+      transition: { duration: 1.0, ease: LINE, delay: 0.15 },
+    },
   };
   const coreV: Variants = {
     hidden: { scaleY: 0 },

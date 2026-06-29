@@ -55,9 +55,12 @@ const coreV: Variants = {
   hidden: { scaleY: 0 },
   visible: { scaleY: 1, transition: { duration: 0.64, ease: LINE, delay: 1.7 } },
 };
+// the dusk blooms BEFORE the core descends (content/06 §1 beat table) so the
+// vermilion core is the final beat — "the flare arrives only after the structure
+// is complete." (Was 1.9, after the core; moved to 1.3 to land the core last.)
 const duskV: Variants = {
   hidden: { opacity: 0, scaleY: 0 },
-  visible: { opacity: 1, scaleY: 1, transition: { duration: 0.8, ease: SOFT, delay: 1.9 } },
+  visible: { opacity: 1, scaleY: 1, transition: { duration: 0.8, ease: SOFT, delay: 1.3 } },
 };
 
 /* —— the mono index rolling 00→0n as its stratum lands (§8.6a beat 3) —— */

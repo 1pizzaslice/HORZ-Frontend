@@ -140,16 +140,17 @@ export function SectionShowcase() {
                 index + one vertical core on the 5/12 line.
               </li>
               <li>
-                — Flare appears only on the core (and a hovered stratum&apos;s seam) —
-                ≤5% of the viewport, one shared core for the whole rack.
+                — Flare appears on the shared core, plus one accent on the hovered
+                row&apos;s critical node — ≤5% of the viewport, one core for the rack.
               </li>
               <li>
-                — Enable your OS &ldquo;reduce motion&rdquo; setting and reload: the
-                Section renders already-drawn, no transforms, indices set 01→07.
+                — Enable your OS &ldquo;reduce motion&rdquo; setting and reload: every
+                row renders at its resolved end-state, no motion, no per-row flare.
               </li>
               <li>
-                — Hover any stratum: its seam bleeds to flare, the index brightens,
-                the drawn artifact wakes. The row never lifts or moves.
+                — Hover any stratum: the layer plays its one degree of life — the
+                queue clears, the redline signs off, the sparkline lifts its anomaly
+                — and a single vermilion node lights on its work. The row never moves.
               </li>
             </ul>
           </div>

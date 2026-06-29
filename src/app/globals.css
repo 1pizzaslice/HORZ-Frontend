@@ -1049,12 +1049,14 @@
     pointer-events: none;
   }
 
-  /* hover/focus (§7.5.2): the hovered stratum's own seam bleeds to flare, the
-     index brightens tertiary→secondary, the artifact gains life. No lift, no
-     shadow, no colour flood, and the row never moves. */
+  /* hover/focus (§7.5.2 + content/06 §3): the hovered stratum's seam brightens to
+     a crisp neutral (NOT flare — Phase 7 moves the hover flare onto the layer's
+     own critical node inside the drawing, so the vermilion lands on the work, not
+     the divider), the index brightens tertiary→secondary, and the artifact plays
+     its one degree of life. No lift, no shadow, no colour flood; the row never moves. */
   .stratum:hover .stratum-seam,
   .stratum:focus-visible .stratum-seam {
-    background: var(--flare);
+    background: var(--text-tertiary);
   }
   .stratum:hover .stratum-index,
   .stratum:focus-visible .stratum-index,
@@ -1114,7 +1116,12 @@
     height: 30px;
   }
 
-  /* —— mobile: keep index + name + core legible; the claim/artifact step back —— */
+  /* —— mobile: index + name on the left; the core becomes the right-hand spine ——
+     The 5/12 composition can't hold sub-48rem — the longest name ("Customer
+     Service") needs ~80% of the row, so a core at ~40% would slice straight
+     through it (the recurring core-vs-text collision). Instead the core resolves
+     to the right edge, landing exactly on the chevron's dotted tick: the seven
+     layers of breadth (left) all point through their `┊→` to the one shared core. */
   @media (max-width: 47.99rem) {
     .stratum {
       height: 96px;
@@ -1124,7 +1131,19 @@
     }
     .stratum-lead,
     [data-density="control"] .stratum-lead {
-      padding-right: var(--s-16);
+      gap: var(--s-16);
+      padding-right: var(--s-24); /* clears the right-hand core gutter */
+    }
+    .stratum-index,
+    [data-density="control"] .stratum-index {
+      width: 2.25rem;
+    }
+    /* never let a long name reach the core — it ellipsizes first (won't trigger
+       at these widths, but the row can never collide with the spine) */
+    .stratum-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .stratum-figure,
     [data-density="control"] .stratum-figure {
@@ -1134,8 +1153,10 @@
     .stratum-artifact {
       display: none;
     }
+    /* the core on the chevron tick (figure col = the 22px chevron, flush right) */
     .rack-core {
-      left: 38%;
+      left: auto;
+      right: 1.375rem;
     }
     [data-density="control"] .stratum {
       height: 48px;

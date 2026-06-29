@@ -1,19 +1,83 @@
+"use client";
+
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
 import { Container, Datum, Eyebrow, Reveal } from "@/components/ui";
+import { ease } from "@/lib/motion";
 
 /**
- * §8.3 — Proof, as a survey log (never a logo wall). Named artifacts and concrete
- * numbers in the instrument's own mono voice: a ledger on the datum. Every figure
- * is honestly stamped [PLACEHOLDER] until real data is swapped in pre-launch
- * (content/01 §3 + the number policy in 00 §7) — the unverified stamp reads as
- * survey annotation, on-brand, not a dodge.
+ * §8.3 / content/06 §2 — Proof, as a survey log (never a logo wall). Named
+ * artifacts and concrete numbers in the instrument's own mono voice: a ledger on
+ * the datum. Every figure is honestly stamped [PLACEHOLDER] until real data is
+ * swapped in pre-launch (content/01 §3 + the number policy in 00 §7).
+ *
+ * On first intersection each tabular figure **counts up from 0 to its value**,
+ * once, ~700ms on the house ease, staggered top→bottom — the survey reading out.
+ * Fire-once: never re-runs, never reverses (content/06 §2). Reduced-motion / no-JS
+ * render the final value with no count. Everything that is not a number stays
+ * static — verbs, indices, names, leader dots. No flare here; proof is mono ink.
  */
+type Bezier = [number, number, number, number];
+const LINE = ease.line as unknown as Bezier;
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// the figure column, as numbers so the count-up is exact; the suffix carries the
+// non-counting tail (the cited count, the "M", the franchise unit) verbatim.
 const FIELD_LOG = [
-  { value: "12,418", label: "tickets resolved in your product's voice", index: "01" },
-  { value: "3,140", label: "GDPR Article 28 DPAs issued", index: "02" },
-  { value: "47/12", label: "launch posts shipped / cited in AI answers", index: "04" },
-  { value: "1.2M", label: "company facts answered, source attached", index: "06" },
-  { value: "2,400", label: "Delaware franchise filings, before March 1", index: "07" },
+  { to: 12418, decimals: 0, suffix: "", label: "tickets resolved in your product's voice", index: "01" },
+  { to: 3140, decimals: 0, suffix: "", label: "GDPR Article 28 DPAs issued", index: "02" },
+  { to: 47, decimals: 0, suffix: "/12", label: "launch posts shipped / cited in AI answers", index: "04" },
+  { to: 1.2, decimals: 1, suffix: "M", label: "company facts answered, source attached", index: "06" },
+  { to: 2400, decimals: 0, suffix: "", label: "Delaware franchise filings, before March 1", index: "07" },
 ];
+
+const fmt = (v: number, decimals: number, suffix: string) =>
+  v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) +
+  suffix;
+
+function CountUpFigure({
+  to,
+  decimals,
+  suffix,
+  delay,
+  className,
+}: {
+  to: number;
+  decimals: number;
+  suffix: string;
+  delay: number;
+  className: string;
+}) {
+  const reduced = useReducedMotion() ?? false;
+  const [mounted, setMounted] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.9 });
+  const mv = useMotionValue(0);
+  const text = useTransform(mv, (v) => fmt(v, decimals, suffix));
+
+  useIsoLayoutEffect(() => setMounted(true), []);
+  const animateIt = mounted && !reduced;
+
+  useEffect(() => {
+    if (!animateIt || !inView) return;
+    const controls = animate(mv, to, { duration: 0.7, delay, ease: LINE });
+    return () => controls.stop();
+  }, [animateIt, inView, to, delay, mv]);
+
+  // SSR / no-JS / reduced: the final figure, no count.
+  return (
+    <span ref={ref} className={className}>
+      {animateIt ? <motion.span>{text}</motion.span> : fmt(to, decimals, suffix)}
+    </span>
+  );
+}
 
 function PlaceholderTag() {
   return (
@@ -46,10 +110,14 @@ export function ProofLog() {
               <span className="order-1 sm:self-center">
                 <PlaceholderTag />
               </span>
-              {/* the figure — large mono, tabular, right-aligned so the column locks */}
-              <span className="index order-3 col-span-2 text-[1.75rem] leading-none tracking-tight text-ink sm:order-2 sm:col-span-1 sm:text-right sm:text-[2rem]">
-                {row.value}
-              </span>
+              {/* the figure — large mono, tabular, right-aligned, counts up from 0 */}
+              <CountUpFigure
+                to={row.to}
+                decimals={row.decimals}
+                suffix={row.suffix}
+                delay={Math.min(i, 5) * 0.06}
+                className="index order-3 col-span-2 tabular-nums text-[1.75rem] leading-none tracking-tight text-ink sm:order-2 sm:col-span-1 sm:text-right sm:text-[2rem]"
+              />
               {/* the named artifact */}
               <span className="body-sm order-4 col-span-2 text-ink-muted sm:order-3 sm:col-span-1">
                 {row.label}
