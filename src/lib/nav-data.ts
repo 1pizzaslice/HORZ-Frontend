@@ -3,10 +3,10 @@
  * (the single source of truth for chrome copy). Nothing here is improvised.
  *
  * `soon: true` follows the §2 build note — these destinations render disabled with
- * a `soon` tag until their content ships: Roadmap, Careers, Contact, Brand kit,
- * Survey Log, Field Notes. (Security & Trust shipped in Phase 5a, so it now carries
- * a real href.) Every other link carries its real href and resolves as later phases
- * land its page.
+ * a `soon` tag until their content ships: Roadmap, Careers, Brand kit, Survey Log,
+ * Field Notes. (Security & Trust shipped in Phase 5a and Contact in Phase 5b, so
+ * both now carry real hrefs.) Every other link carries its real href and resolves
+ * as later phases land its page.
  */
 
 export type NavLink = {
@@ -70,7 +70,7 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     links: [
       { label: "Manifesto", href: "/manifesto" }, // combined manifesto + about
       { label: "Careers", href: "/careers", soon: true },
-      { label: "Contact", href: "/contact", soon: true },
+      { label: "Contact", href: "/contact" },
       { label: "Brand kit", href: "/brand", soon: true },
     ],
   },

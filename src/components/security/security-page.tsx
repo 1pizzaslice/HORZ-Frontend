@@ -361,10 +361,12 @@ function Floor() {
             <p className="body mt-3 text-ink-muted">
               Request the SOC 2 Type II report, the GDPR Article 28 DPA, or the
               current sub-processor list at{" "}
-              <span className="font-mono text-ink">security@horz.dev</span>{" "}
-              [PLACEHOLDER]. Report a vulnerability to the same address; we
-              acknowledge within [PLACEHOLDER — target] and keep you on the thread
-              to resolution.
+              <FlareLink href="mailto:security@horz.dev" quiet className="font-mono">
+                security@horz.dev
+              </FlareLink>
+              . Report a vulnerability to the same address; we acknowledge within{" "}
+              <span className="font-mono text-ink-faint">[PLACEHOLDER — target]</span>{" "}
+              and keep you on the thread to resolution.
             </p>
           </div>
         </Reveal>
