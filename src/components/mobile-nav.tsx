@@ -142,13 +142,6 @@ export function MobileNav({
                     <span className="h4 text-ink">{l.label}</span>
                   </Link>
                 ))}
-                <Link
-                  href={NAV_UTILITY.login.href}
-                  onClick={onClose}
-                  className="stratum-row seam seam-top"
-                >
-                  <span className="ui-label text-ink-muted">{NAV_UTILITY.login.label}</span>
-                </Link>
               </div>
             </nav>
 
@@ -156,10 +149,10 @@ export function MobileNav({
             <div className="px-6 pb-8 pt-2">
               <Datum />
               <div className="mt-6 flex flex-col gap-3">
-                <CTA href="/login" variant="primary" size="lg" block onClick={onClose}>
+                <CTA href={NAV_UTILITY.primaryHref} variant="primary" size="lg" block onClick={onClose}>
                   {NAV_UTILITY.primary}
                 </CTA>
-                <CTA href="/contact" variant="secondary" size="lg" block onClick={onClose}>
+                <CTA href={NAV_UTILITY.secondaryHref} variant="secondary" size="lg" block onClick={onClose}>
                   {NAV_UTILITY.secondary}
                 </CTA>
               </div>

@@ -12,7 +12,7 @@ const LINE = ease.line as unknown as Bezier;
 /**
  * TheBoard (content/08) — the contact directory drawn as a switchboard. Six lines
  * descend top to bottom, each a route: a 2-digit mono index, who it's for, the
- * channel, a response reading. The two primary lines (01 Start building, 02 Talk
+ * channel, a response reading. The two primary lines (01 Founding access, 02 Talk
  * to us) render as filled strata of equal weight; 03–06 as hairline reference
  * rows. A single vertical core descends on the 5/12 line through the two filled
  * strata and seats on line 02 — the one founder-answered line — terminating in
@@ -105,12 +105,12 @@ function Stamp({ label }: { label: string }) {
   );
 }
 
-/** the seated jack — line 01, the self-serve start */
-function JackStamp() {
+/** the founding-cohort glyph — line 01, the pre-launch access request */
+function FoundingStamp() {
   return (
     <div className="flex flex-col gap-3">
-      <Stamp label="LIVE" />
-      <span className="index text-ink-faint">WAIT 00</span>
+      <Stamp label="OPEN" />
+      <span className="index text-ink-faint">COHORT 01</span>
     </div>
   );
 }
@@ -230,23 +230,24 @@ export function TheBoard() {
         <div className="relative overflow-hidden border-t border-line">
           <Line
             index="01"
-            name="START BUILDING"
+            name="FOUNDING ACCESS"
             filled
-            who="founders and small teams ready to begin now, no call required."
-            channel="the app. Sign up and the first layer runs before we'd ever speak."
-            response={
+            who="founders and early teams who want in before the public launch."
+            channel={
               <>
-                logged on submit.{" "}
-                <span className="font-mono text-ink-faint">
-                  [PLACEHOLDER — target: account live in under a minute]
-                </span>
+                request access and we onboard you by hand.{" "}
+                <FlareLink href="mailto:contact@horz.dev" quiet className="font-mono">
+                  contact@horz.dev
+                </FlareLink>
+                .
               </>
             }
-            standalone="Begin without us in the room."
-            stamp={<JackStamp />}
+            response="we read every request, and a founder replies in person. No waitlist autoresponder, no queue."
+            standalone="Get in before the doors open."
+            stamp={<FoundingStamp />}
             cta={
-              <FlareLink href="/login" className="index uppercase">
-                Start building →
+              <FlareLink href="/founding-access" className="index uppercase">
+                Request founding access →
               </FlareLink>
             }
           />

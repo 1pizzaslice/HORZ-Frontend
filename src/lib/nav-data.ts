@@ -4,9 +4,10 @@
  *
  * `soon: true` follows the §2 build note — these destinations render disabled with
  * a `soon` tag until their content ships: Roadmap, Careers, Brand kit, Survey Log,
- * Field Notes. (Security & Trust shipped in Phase 5a and Contact in Phase 5b, so
- * both now carry real hrefs.) Every other link carries its real href and resolves
- * as later phases land its page.
+ * Field Notes, and the legal artifacts that need a real counterparty/audit (DPA,
+ * Subprocessors, SOC 2 report). (Security & Trust shipped in Phase 5a and Contact
+ * in Phase 5b; Terms/Privacy/Cookies ship in the pre-launch pass, so all carry
+ * real hrefs.) Every other link carries its real href and resolves as its page lands.
  */
 
 export type NavLink = {
@@ -44,11 +45,19 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Manifesto", href: "/manifesto" },
 ];
 
-/** Right-side utility + CTA copy (locked, §1 / §3). */
+/** Right-side CTA copy (§1 / §3).
+ *
+ *  Pre-launch reframe: the self-serve "Log in" / "Start building" motion is
+ *  replaced by a founding-access request. There is no product to log into yet,
+ *  and an empty dashboard reads cheap; "Request access" captures the lead and
+ *  reads founded, not unfinished. The long form ("Request founding access.")
+ *  rides the page floors; the nav keeps the compact "Request access." so the
+ *  right cluster never crowds the centre links. */
 export const NAV_UTILITY = {
-  login: { label: "Log in", href: "/login" }, // no period — utility, not a command
-  primary: "Start building.",
+  primary: "Request access.",
+  primaryHref: "/founding-access",
   secondary: "Talk to us.",
+  secondaryHref: "/contact",
 };
 
 /** The footer directory (§2) — each column a mini-stratum with a mono index. */
@@ -90,12 +99,12 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     index: "D",
     head: "Legal",
     links: [
-      { label: "Terms", href: "/terms" },
-      { label: "Privacy", href: "/privacy" },
-      { label: "DPA", href: "/dpa" }, // GDPR Article 28
-      { label: "Subprocessors", href: "/subprocessors" },
-      { label: "SOC 2 report", href: "/soc2" },
-      { label: "Cookie settings", href: "/cookies" },
+      { label: "Terms", href: "/terms" }, // live (pre-launch template, counsel review pending)
+      { label: "Privacy", href: "/privacy" }, // live
+      { label: "Cookies", href: "/cookies" }, // live
+      { label: "DPA", href: "/dpa", soon: true }, // GDPR Article 28 — ships with a signing counterparty
+      { label: "Subprocessors", href: "/subprocessors", soon: true },
+      { label: "SOC 2 report", href: "/soc2", soon: true },
     ],
   },
 ];

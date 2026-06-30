@@ -425,8 +425,8 @@ function Floor() {
             <CTA href="/contact" variant="primary" size="lg">
               Talk to us.
             </CTA>
-            <CTA href="/login" variant="secondary" size="lg">
-              Start building.
+            <CTA href="/founding-access" variant="secondary" size="lg">
+              Request founding access.
             </CTA>
           </div>
         </Reveal>

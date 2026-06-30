@@ -15,7 +15,8 @@ import { ease } from "@/lib/motion";
  * transparent bar; on scroll past the hero it seats (bg 80% + blur, hairline
  * sharpens). Left: the inline lockup (no glyph — noise here, §3). Center: the
  * three links, the active route carrying a persistent 1px flare tick. Right:
- * Log in + Talk to us (ghost) + Start building.
+ * Talk to us (ghost) + Request access (the founding-access lead capture; the
+ * old Log in / self-serve motion is retired pre-launch — no empty product).
  *
  * `heroOverlay` is the homepage rule: the hero owns the one flare CTA above the
  * fold, so the nav's primary stays ghost until you scroll past it — two flare
@@ -186,17 +187,11 @@ export function SiteNav({ heroOverlay = false }: { heroOverlay?: boolean }) {
 
           {/* right cluster (desktop) */}
           <div className="hidden items-center gap-2 lg:flex">
-            <Link
-              href={NAV_UTILITY.login.href}
-              className="inline-link quiet ui-label mr-2"
-            >
-              {NAV_UTILITY.login.label}
-            </Link>
-            <CTA href="/contact" variant="ghost" size="sm">
+            <CTA href={NAV_UTILITY.secondaryHref} variant="ghost" size="sm">
               {NAV_UTILITY.secondary}
             </CTA>
             <CTA
-              href="/login"
+              href={NAV_UTILITY.primaryHref}
               variant={primaryFilled ? "primary" : "secondary"}
               size="sm"
             >

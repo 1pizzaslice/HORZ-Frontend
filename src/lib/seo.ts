@@ -101,6 +101,32 @@ export const MANIFESTO_SEO = {
   description:
     "Engineers stopped writing their own auth. Founders should stop running their own back office. Why we run the six functions around your product.",
 };
+/** Founding-access — the pre-launch lead-capture page (no content/02 §5 entry;
+ *  written to match the §5 length rules: title < 60, description < 155). */
+export const FOUNDING_SEO = {
+  title: "Founding access — work with us before launch · horz",
+  description:
+    "horz isn't generally available yet. We onboard the first founders by hand — request founding access for hands-on setup and founding pricing held for good.",
+};
+
+/* ── the legal documents (§5 length rules; titles < 60, descriptions < 155) ─── */
+export const LEGAL_SEO: Record<"terms" | "privacy" | "cookies", { title: string; description: string }> = {
+  terms: {
+    title: "Terms of Service · horz",
+    description:
+      "The terms that govern access to and use of horz — the Service, your accounts and data, acceptable use, founding access, fees, liability, and governing law.",
+  },
+  privacy: {
+    title: "Privacy Policy · horz",
+    description:
+      "How horz collects, uses, shares, and protects personal information, and the rights and choices you have under GDPR, UK GDPR, and US state privacy laws.",
+  },
+  cookies: {
+    title: "Cookie Policy · horz",
+    description:
+      "How horz uses cookies and similar technologies on its website and Service, the categories we use, and how to control them in your browser.",
+  },
+};
 
 type PageMetaInput = {
   /** the page <title> text */

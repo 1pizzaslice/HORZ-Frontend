@@ -32,7 +32,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/pricing", priority: 0.7 },
     { path: "/manifesto", priority: 0.6 },
     { path: "/security", priority: 0.6 },
+    { path: "/founding-access", priority: 0.6 },
     { path: "/contact", priority: 0.5 },
+    { path: "/terms", priority: 0.3 },
+    { path: "/privacy", priority: 0.3 },
+    { path: "/cookies", priority: 0.3 },
   ].map(({ path, priority }) => ({
     url: `${SITE_URL}${path}`,
     lastModified,

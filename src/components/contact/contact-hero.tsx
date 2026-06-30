@@ -29,10 +29,10 @@ export function ContactHero() {
           </h1>
         </Reveal>
         <Reveal delay={0.12} as="p" className="body mt-8 max-w-[64ch] text-ink-muted">
-          Six channels on one board: a self-serve start, a founder on the line for
-          migrations and larger rollouts, a security desk that returns the trust
-          pack, a support line tied to the public status page, press, and careers.
-          Pick the line. We log the call.
+          Six channels on one board: a founding-access request, a founder on the
+          line for migrations and larger rollouts, a security desk that returns the
+          trust pack, a support line tied to the public status page, press, and
+          careers. Pick the line. We log the call.
         </Reveal>
       </Container>
       {/* the one gradient, once per page — the horizon the board rises from */}

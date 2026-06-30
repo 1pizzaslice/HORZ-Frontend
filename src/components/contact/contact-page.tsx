@@ -32,7 +32,7 @@ export function ContactPage() {
 export const OBJECTIONS = [
   {
     q: "'Talk to us' sounds like a sales funnel. I don't want an SDR working me.",
-    a: "You won't get one. The Talk-to-us line is answered by a founder, not a queue, and there is no drip sequence behind the form. If self-serve fits, Start building skips the call entirely and the first layer is running the same day.",
+    a: "You won't get one. The Talk-to-us line is answered by a founder, not a queue, and there is no drip sequence behind the form. If you'd rather not get on a call, request founding access instead and we'll set you up by hand.",
   },
   {
     q: "Is horz only for solo founders? We run 200 people and a drawer of point tools.",
@@ -125,10 +125,10 @@ function WhereThisPoints() {
   );
 }
 
-/* ── the floor — Start building primary (content/08); the page's one flare fill ─ */
+/* ── the floor — Request founding access primary; the page's one flare fill ──── */
 function Floor() {
   return (
-    <section aria-label="Start building" data-nav-flare="off" className="relative bg-horizon">
+    <section aria-label="Request founding access" data-nav-flare="off" className="relative bg-horizon">
       <Datum />
       {/* the core arrives at the floor and terminates in one flare tick */}
       <span
@@ -146,13 +146,13 @@ function Floor() {
           </Eyebrow>
         </Reveal>
         <Reveal delay={0.05} y={24}>
-          <p className="display-m max-w-[14ch] text-ink">Start building.</p>
+          <p className="display-m max-w-[16ch] text-ink">Request founding access.</p>
         </Reveal>
 
         <Reveal delay={0.12}>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <CTA href="/login" variant="primary" size="lg">
-              Start building.
+            <CTA href="/founding-access" variant="primary" size="lg">
+              Request founding access.
             </CTA>
             <CTA href="mailto:talk@horz.dev" variant="secondary" size="lg">
               Talk to us.

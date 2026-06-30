@@ -156,8 +156,8 @@ export function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <CTA href="/login" variant="primary" size="lg">
-              Start building.
+            <CTA href="/founding-access" variant="primary" size="lg">
+              Request founding access.
             </CTA>
             <CTA href="/contact" variant="secondary" size="lg">
               Talk to us.

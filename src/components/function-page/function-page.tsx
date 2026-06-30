@@ -418,7 +418,7 @@ function CrossSell({ fn }: { fn: FunctionPage }) {
 function CtaFloor({ fn }: { fn: FunctionPage }) {
   const [a, b] = POSITIONING_ONE_LINER.split(". ");
   return (
-    <section aria-label="Start building" data-nav-flare="off" className="relative bg-horizon">
+    <section aria-label="Request founding access" data-nav-flare="off" className="relative bg-horizon">
       <Datum />
       {/* the page core arrives at the floor and terminates in one flare tick */}
       <span
@@ -444,8 +444,8 @@ function CtaFloor({ fn }: { fn: FunctionPage }) {
 
         <Reveal delay={0.2}>
           <div className="mt-12 flex flex-wrap items-center gap-4">
-            <CTA href="/login" variant="primary" size="lg">
-              Start building.
+            <CTA href="/founding-access" variant="primary" size="lg">
+              Request founding access.
             </CTA>
             <CTA href="/contact" variant="secondary" size="lg">
               Talk to us.
